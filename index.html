@@ -7,13 +7,10 @@
     <meta name="description"
         content="A Mansão do Coronel — um livro-jogo interativo ambientado no sertão nordestino brasileiro.">
     <meta name="theme-color" content="#1a1006">
-
-    <!-- Open Graph -->
     <meta property="og:title" content="A Mansão do Coronel">
     <meta property="og:description"
         content="Um livro-jogo de horror folclórico ambientado numa fazenda abandonada do Nordeste brasileiro.">
     <meta property="og:type" content="website">
-
     <title>A Mansão do Coronel</title>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -21,18 +18,15 @@
 <body>
 
     <!-- ═══════════════════════════════════════════════════════
-       TELA DE INÍCIO
-  ════════════════════════════════════════════════════════ -->
+         TELA DE INÍCIO
+    ════════════════════════════════════════════════════════ -->
     <div id="tela-inicio">
         <div class="inicio-container">
             <div class="inicio-capa papel">
 
                 <p class="inicio-serie">Aventuras no Sertão · Volume I</p>
-
                 <h1 class="inicio-titulo">A Mansão do Coronel</h1>
-
                 <p class="inicio-subtitulo">Uma aventura de horror folclórico onde você é o herói</p>
-
                 <div class="inicio-ornamento">✦ ✦ ✦</div>
 
                 <p class="inicio-descricao">
@@ -42,13 +36,7 @@
                     se quiser ver o amanhecer.
                 </p>
 
-                <div class="inicio-dados-area">
-                    <p>Experimente rolar os dados antes de começar</p>
-                    <span id="resultado-dados">🎲 &nbsp; 🎲 &nbsp; 🎲</span>
-                    <button class="btn-secundario" id="btn-rolar-inicio">Rolar dados</button>
-                </div>
-
-                <button id="btn-comecar">Entrar na fazenda →</button>
+                <button id="btn-comecar">Criar personagem →</button>
 
             </div>
         </div>
@@ -56,16 +44,109 @@
 
 
     <!-- ═══════════════════════════════════════════════════════
-       TELA DO JOGO
-  ════════════════════════════════════════════════════════ -->
+         TELA DE CRIAÇÃO DE PERSONAGEM
+    ════════════════════════════════════════════════════════ -->
+    <div id="tela-criacao">
+        <div class="criacao-container">
+            <div class="criacao-box papel">
+
+                <p class="inicio-serie">Criação de Personagem</p>
+                <h2 class="criacao-titulo">Defina seus Atributos</h2>
+                <p class="criacao-instrucao">
+                    Role os dados para cada atributo. Você precisa rolar todos os quatro antes de entrar na fazenda.
+                </p>
+
+                <div class="criacao-stats">
+
+                    <!-- PERÍCIA: 1d6 + 6 -->
+                    <div class="criacao-stat" id="bloco-pericia">
+                        <div class="criacao-stat-topo">
+                            <div class="criacao-stat-info">
+                                <span class="criacao-stat-nome">Perícia</span>
+                                <span class="criacao-stat-formula">1d6 + 6</span>
+                                <span class="criacao-stat-desc">Habilidade em combate e destreza</span>
+                            </div>
+                            <div class="criacao-stat-resultado" id="res-pericia">—</div>
+                        </div>
+                        <div class="criacao-dado-detalhe" id="detalhe-pericia"></div>
+                        <button class="btn-rolar-stat" data-stat="pericia" data-formula="1d6+6">
+                            🎲 Rolar Perícia
+                        </button>
+                    </div>
+
+                    <!-- FORÇA: 2d6 + 12 -->
+                    <div class="criacao-stat" id="bloco-forca">
+                        <div class="criacao-stat-topo">
+                            <div class="criacao-stat-info">
+                                <span class="criacao-stat-nome">Força</span>
+                                <span class="criacao-stat-formula">2d6 + 12</span>
+                                <span class="criacao-stat-desc">Resistência física — seus pontos de vida</span>
+                            </div>
+                            <div class="criacao-stat-resultado" id="res-forca">—</div>
+                        </div>
+                        <div class="criacao-dado-detalhe" id="detalhe-forca"></div>
+                        <button class="btn-rolar-stat" data-stat="forca" data-formula="2d6+12">
+                            🎲 Rolar Força
+                        </button>
+                    </div>
+
+                    <!-- SORTE: 1d6 + 6 -->
+                    <div class="criacao-stat" id="bloco-sorte">
+                        <div class="criacao-stat-topo">
+                            <div class="criacao-stat-info">
+                                <span class="criacao-stat-nome">Sorte</span>
+                                <span class="criacao-stat-formula">1d6 + 6</span>
+                                <span class="criacao-stat-desc">Fator do destino — gasto a cada teste</span>
+                            </div>
+                            <div class="criacao-stat-resultado" id="res-sorte">—</div>
+                        </div>
+                        <div class="criacao-dado-detalhe" id="detalhe-sorte"></div>
+                        <button class="btn-rolar-stat" data-stat="sorte" data-formula="1d6+6">
+                            🎲 Rolar Sorte
+                        </button>
+                    </div>
+
+                    <!-- MEDO: 1d6 + 6 (limite máximo — quanto mais alto, melhor) -->
+                    <div class="criacao-stat criacao-stat-medo" id="bloco-medo">
+                        <div class="criacao-stat-topo">
+                            <div class="criacao-stat-info">
+                                <span class="criacao-stat-nome">Limite de Medo</span>
+                                <span class="criacao-stat-formula">1d6 + 6</span>
+                                <span class="criacao-stat-desc">Quanto terror você aguenta antes de enlouquecer</span>
+                            </div>
+                            <div class="criacao-stat-resultado" id="res-medo">—</div>
+                        </div>
+                        <div class="criacao-dado-detalhe" id="detalhe-medo"></div>
+                        <button class="btn-rolar-stat" data-stat="medo" data-formula="1d6+6">
+                            🎲 Rolar Limite de Medo
+                        </button>
+                    </div>
+
+                </div><!-- /criacao-stats -->
+
+                <div class="criacao-rodape">
+                    <button id="btn-voltar-menu" class="btn-secundario">← Voltar</button>
+                    <button id="btn-entrar-fazenda" disabled>
+                        Entrar na fazenda →
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ═══════════════════════════════════════════════════════
+         TELA DO JOGO
+    ════════════════════════════════════════════════════════ -->
     <div id="tela-jogo">
 
-        <!-- ── BOTÃO MENU FIXO ────────────────────────────── -->
+        <!-- ── BOTÃO MENU FIXO ──────────────────────────── -->
         <button id="btn-menu-jogo" onclick="voltarAoMenu()" title="Voltar ao menu">
             ⌂ Menu
         </button>
 
-        <!-- ── FICHA LATERAL ──────────────────────────────── -->
+        <!-- ── FICHA LATERAL ────────────────────────────── -->
         <aside id="painel-ficha">
             <div class="ficha-box papel">
 
@@ -76,7 +157,6 @@
                     Seção <span id="num-secao">1</span>
                 </div>
 
-                <!-- PERÍCIA -->
                 <div class="stat-bloco">
                     <div class="stat-label">
                         <span>Perícia</span>
@@ -84,7 +164,6 @@
                     </div>
                 </div>
 
-                <!-- FORÇA -->
                 <div class="stat-bloco">
                     <div class="stat-label">
                         <span>Força</span>
@@ -95,7 +174,6 @@
                     </div>
                 </div>
 
-                <!-- SORTE -->
                 <div class="stat-bloco">
                     <div class="stat-label">
                         <span>Sorte</span>
@@ -103,7 +181,6 @@
                     </div>
                 </div>
 
-                <!-- MEDO -->
                 <div class="stat-bloco stat-medo">
                     <div class="stat-label">
                         <span>Medo</span>
@@ -119,7 +196,6 @@
 
                 <hr class="divisor-ficha">
 
-                <!-- ITENS -->
                 <p class="ficha-label-itens">Inventário</p>
                 <div id="lista-itens">
                     <span class="sem-itens">Nenhum item</span>
@@ -129,30 +205,20 @@
         </aside>
 
 
-        <!-- ── ÁREA PRINCIPAL ─────────────────────────────── -->
+        <!-- ── ÁREA PRINCIPAL ───────────────────────────── -->
         <main id="area-principal">
 
-            <!-- Texto narrativo -->
             <article id="area-texto" class="papel">
-                <div id="texto-secao">
-                    <!-- Preenchido por game.js -->
-                </div>
+                <div id="texto-secao"></div>
             </article>
 
-            <!-- Eventos mecânicos (combate, sorte, medo...) -->
-            <div id="area-evento">
-                <!-- Preenchido por game.js -->
-            </div>
+            <div id="area-evento"></div>
 
-            <!-- Botões de escolha -->
-            <nav id="area-escolhas" aria-label="Escolhas disponíveis">
-                <!-- Preenchido por game.js -->
-            </nav>
+            <nav id="area-escolhas" aria-label="Escolhas disponíveis"></nav>
 
         </main>
 
     </div><!-- /tela-jogo -->
-
 
     <script src="story.js"></script>
     <script src="game.js"></script>

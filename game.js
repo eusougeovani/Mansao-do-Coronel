@@ -20,16 +20,15 @@ const GameState = {
     venceu: false,
     patuaUsado: false,
 
-    reset() {
-        // Rolar atributos iniciais
-        this.pericia = rolarDado(6) + 6;
-        this.periciaMax = this.pericia;
-        this.forca = rolarDado(6) + rolarDado(6) + 12;
-        this.forcaMax = this.forca;
-        this.sorte = rolarDado(6) + 6;
-        this.sorteMax = this.sorte;
+    reset(pericia, forca, sorte, medoMax) {
+        this.pericia = pericia;
+        this.periciaMax = pericia;
+        this.forca = forca;
+        this.forcaMax = forca;
+        this.sorte = sorte;
+        this.sorteMax = sorte;
         this.medo = 0;
-        this.medoMax = rolarDado(6) + 6;
+        this.medoMax = medoMax;
         this.secaoAtual = 1;
         this.itens = [];
         this.morto = false;
@@ -527,12 +526,29 @@ function renderizarFimDeJogo(vitoria) {
     }
 }
 
-// ─── TELA DE INÍCIO ──────────────────────────────────────────
+// ─── TELA DE INÍCIO / CRIAÇÃO / JOGO ────────────────────────
 
 function mostrarTelaInicio() {
     document.getElementById('tela-inicio').style.display = 'flex';
+    document.getElementById('tela-criacao').style.display = 'none';
     document.getElementById('tela-jogo').style.display = 'none';
-    document.getElementById('resultado-dados').innerHTML = '🎲 &nbsp; 🎲 &nbsp; 🎲';
+}
+
+function mostrarTelaCriacao() {
+    document.getElementById('tela-inicio').style.display = 'none';
+    document.getElementById('tela-criacao').style.display = 'flex';
+    document.getElementById('tela-jogo').style.display = 'none';
+    // Reseta os blocos de stat para estado inicial
+    ['pericia', 'forca', 'sorte', 'medo'].forEach(stat => {
+        const res = document.getElementById('res-' + stat);
+        const det = document.getElementById('detalhe-' + stat);
+        const btn = document.querySelector('[data-stat="' + stat + '"]');
+        if (res) { res.textContent = '—'; res.classList.remove('rolado'); }
+        if (det) det.textContent = '';
+        if (btn) { btn.disabled = false; btn.classList.remove('ja-rolado'); }
+    });
+    document.getElementById('btn-entrar-fazenda').disabled = true;
+    statsRolados = {};
 }
 
 function voltarAoMenu() {
@@ -544,9 +560,10 @@ function voltarAoMenu() {
     if (confirmar) mostrarTelaInicio();
 }
 
-function iniciarJogo() {
-    GameState.reset();
+function iniciarJogo(pericia, forca, sorte, medoMax) {
+    GameState.reset(pericia, forca, sorte, medoMax);
     document.getElementById('tela-inicio').style.display = 'none';
+    document.getElementById('tela-criacao').style.display = 'none';
     document.getElementById('tela-jogo').style.display = 'flex';
     renderizarFicha();
     irParaSecao(1);
@@ -554,17 +571,72 @@ function iniciarJogo() {
 
 // ─── INIT ────────────────────────────────────────────────────
 
+// Guarda os valores já rolados na tela de criação
+let statsRolados = {};
+
+// Fórmulas de rolagem para cada stat
+function rolarFormula(formula) {
+    // "1d6+6" ou "2d6+12"
+    const match = formula.match(/^(\d+)d(\d+)\+(\d+)$/);
+    if (!match) return { total: 0, dados: [], bonus: 0 };
+    const qtd = parseInt(match[1]);
+    const lados = parseInt(match[2]);
+    const bonus = parseInt(match[3]);
+    const dados = Array.from({ length: qtd }, () => rolarDado(lados));
+    const total = dados.reduce((a, b) => a + b, 0) + bonus;
+    return { total, dados, bonus };
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     mostrarTelaInicio();
 
-    document.getElementById('btn-comecar').addEventListener('click', iniciarJogo);
+    // Tela de início → Criação
+    document.getElementById('btn-comecar').addEventListener('click', mostrarTelaCriacao);
 
-    // Botão de rolar dados na tela de início (apenas visual)
-    document.getElementById('btn-rolar-inicio').addEventListener('click', () => {
-        const d1 = rolarDado(6);
-        const d2 = rolarDado(6);
-        const d3 = rolarDado(6);
-        document.getElementById('resultado-dados').textContent =
-            `🎲 ${d1}  🎲 ${d2}  🎲 ${d3}`;
+    // Criação → Menu
+    document.getElementById('btn-voltar-menu').addEventListener('click', mostrarTelaInicio);
+
+    // Botões de rolagem de cada stat
+    document.querySelectorAll('.btn-rolar-stat').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const stat = btn.dataset.stat;
+            const formula = btn.dataset.formula;
+            const { total, dados, bonus } = rolarFormula(formula);
+
+            // Resultado visual
+            const res = document.getElementById('res-' + stat);
+            res.textContent = total;
+            res.classList.add('rolado');
+
+            // Detalhe dos dados
+            const det = document.getElementById('detalhe-' + stat);
+            const dadosStr = dados.map(d => `[${d}]`).join(' + ');
+            det.textContent = dados.length > 1
+                ? `${dadosStr} + ${bonus} = ${total}`
+                : `[${dados[0]}] + ${bonus} = ${total}`;
+
+            // Desabilita o botão (já rolou)
+            btn.disabled = true;
+            btn.classList.add('ja-rolado');
+            btn.textContent = '✓ Rolado';
+
+            // Salva o valor
+            statsRolados[stat] = total;
+
+            // Habilita "Entrar na fazenda" só quando todos os 4 foram rolados
+            const todosRolados = ['pericia', 'forca', 'sorte', 'medo']
+                .every(s => statsRolados[s] !== undefined);
+            document.getElementById('btn-entrar-fazenda').disabled = !todosRolados;
+        });
+    });
+
+    // Criação → Jogo
+    document.getElementById('btn-entrar-fazenda').addEventListener('click', () => {
+        iniciarJogo(
+            statsRolados.pericia,
+            statsRolados.forca,
+            statsRolados.sorte,
+            statsRolados.medo
+        );
     });
 });
