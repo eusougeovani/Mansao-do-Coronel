@@ -36,6 +36,9 @@
                     se quiser ver o amanhecer.
                 </p>
 
+                <!-- Banner de save (aparece via JS se houver save) -->
+                <div id="banner-save" style="display:none"></div>
+
                 <button id="btn-comecar">Criar personagem →</button>
 
             </div>
@@ -219,6 +222,23 @@
         </main>
 
     </div><!-- /tela-jogo -->
+
+
+    <!-- ═══════════════════════════════════════════════════════
+         MODAL: CONFIRMAR SAÍDA
+    ════════════════════════════════════════════════════════ -->
+    <div id="modal-menu" role="dialog" aria-modal="true" aria-labelledby="modal-titulo">
+        <div class="modal-caixa papel">
+            <h3 id="modal-titulo" class="modal-titulo">Voltar ao menu?</h3>
+            <p class="modal-texto">
+                Sua partida está salva automaticamente. Você pode continuar de onde parou quando voltar.
+            </p>
+            <div class="modal-botoes">
+                <button class="btn-modal-sec" id="btn-modal-cancelar">Continuar jogando</button>
+                <button class="btn-modal-pri" id="btn-modal-confirmar">Ir ao menu</button>
+            </div>
+        </div>
+    </div>
 
     <script src="story.js"></script>
     <script src="game.js"></script>

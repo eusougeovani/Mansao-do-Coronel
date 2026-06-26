@@ -37,6 +37,70 @@ const GameState = {
     }
 };
 
+// ─── SAVE OFFLINE (localStorage) ────────────────────────────
+
+const SAVE_KEY = 'mansao_coronel_save';
+
+const Save = {
+    salvar() {
+        const dados = {
+            pericia: GameState.pericia,
+            periciaMax: GameState.periciaMax,
+            forca: GameState.forca,
+            forcaMax: GameState.forcaMax,
+            sorte: GameState.sorte,
+            sorteMax: GameState.sorteMax,
+            medo: GameState.medo,
+            medoMax: GameState.medoMax,
+            secaoAtual: GameState.secaoAtual,
+            itens: [...GameState.itens],
+            morto: GameState.morto,
+            venceu: GameState.venceu,
+            patuaUsado: GameState.patuaUsado,
+            timestamp: Date.now()
+        };
+        try {
+            localStorage.setItem(SAVE_KEY, JSON.stringify(dados));
+        } catch (e) {
+            console.warn('Save falhou:', e);
+        }
+    },
+
+    carregar() {
+        try {
+            const raw = localStorage.getItem(SAVE_KEY);
+            return raw ? JSON.parse(raw) : null;
+        } catch (e) {
+            return null;
+        }
+    },
+
+    limpar() {
+        try { localStorage.removeItem(SAVE_KEY); } catch (e) { }
+    },
+
+    temSave() {
+        return !!localStorage.getItem(SAVE_KEY);
+    },
+
+    restaurarEstado(dados) {
+        GameState.pericia = dados.pericia;
+        GameState.periciaMax = dados.periciaMax;
+        GameState.forca = dados.forca;
+        GameState.forcaMax = dados.forcaMax;
+        GameState.sorte = dados.sorte;
+        GameState.sorteMax = dados.sorteMax;
+        GameState.medo = dados.medo;
+        GameState.medoMax = dados.medoMax;
+        GameState.secaoAtual = dados.secaoAtual;
+        GameState.itens = dados.itens || [];
+        GameState.morto = dados.morto || false;
+        GameState.venceu = dados.venceu || false;
+        GameState.patuaUsado = dados.patuaUsado || false;
+    }
+};
+
+
 // ─── UTILITÁRIOS DE DADOS ────────────────────────────────────
 
 function rolarDado(lados = 6) {
@@ -198,6 +262,7 @@ function irParaSecao(num) {
     }
 
     GameState.secaoAtual = num;
+    Save.salvar();
 
     // Limpa escolhas enquanto o texto aparece
     document.getElementById('area-escolhas').innerHTML = '';
@@ -494,6 +559,7 @@ function renderizarEscolhas(choices) {
 // ─── FIM DE JOGO ─────────────────────────────────────────────
 
 function renderizarFimDeJogo(vitoria) {
+    Save.limpar(); // Partida encerrada — sem retomada
     const area = document.getElementById('area-escolhas');
     const areaEvento = document.getElementById('area-evento');
 
@@ -556,11 +622,21 @@ function voltarAoMenu() {
         mostrarTelaInicio();
         return;
     }
-    const confirmar = confirm('Tem certeza que quer voltar ao menu? O progresso não salvo será perdido.');
-    if (confirmar) mostrarTelaInicio();
+    // Save existe — pergunta via modal próprio
+    document.getElementById('modal-menu').style.display = 'flex';
+}
+
+function fecharModalMenu() {
+    document.getElementById('modal-menu').style.display = 'none';
+}
+
+function confirmarVoltarMenu() {
+    fecharModalMenu();
+    mostrarTelaInicio();
 }
 
 function iniciarJogo(pericia, forca, sorte, medoMax) {
+    Save.limpar();
     GameState.reset(pericia, forca, sorte, medoMax);
     document.getElementById('tela-inicio').style.display = 'none';
     document.getElementById('tela-criacao').style.display = 'none';
@@ -587,8 +663,60 @@ function rolarFormula(formula) {
     return { total, dados, bonus };
 }
 
+
+// ─── BANNER DE SAVE NA TELA DE INÍCIO ───────────────────────
+
+function atualizarBannerSave(save) {
+    const banner = document.getElementById('banner-save');
+    if (!banner) return;
+
+    if (!save || save.morto || save.venceu) {
+        banner.style.display = 'none';
+        return;
+    }
+
+    // Formata data/hora
+    const dt = new Date(save.timestamp);
+    const dataStr = dt.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    const horaStr = dt.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+
+    banner.style.display = 'block';
+    banner.innerHTML = `
+        <div class="save-info">
+            <span class="save-titulo">📖 Partida salva encontrada</span>
+            <span class="save-detalhe">Seção ${save.secaoAtual} · FORÇA ${save.forca}/${save.forcaMax} · MEDO ${save.medo}/${save.medoMax}</span>
+            <span class="save-data">${dataStr} às ${horaStr}</span>
+        </div>
+        <button class="btn-retomar" id="btn-retomar">Continuar →</button>
+    `;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+    // Verifica save existente
+    const saveExistente = Save.carregar();
     mostrarTelaInicio();
+    atualizarBannerSave(saveExistente);
+
+    // Botão: retomar jogo salvo
+    const btnRetomar = document.getElementById('btn-retomar');
+    if (btnRetomar) {
+        btnRetomar.addEventListener('click', () => {
+            const s = Save.carregar();
+            if (!s) return;
+            Save.restaurarEstado(s);
+            document.getElementById('tela-inicio').style.display = 'none';
+            document.getElementById('tela-criacao').style.display = 'none';
+            document.getElementById('tela-jogo').style.display = 'flex';
+            renderizarFicha();
+            irParaSecao(s.secaoAtual);
+        });
+    }
+
+    // Modal de confirmação de saída
+    document.getElementById('btn-modal-cancelar')
+        .addEventListener('click', fecharModalMenu);
+    document.getElementById('btn-modal-confirmar')
+        .addEventListener('click', confirmarVoltarMenu);
 
     // Tela de início → Criação
     document.getElementById('btn-comecar').addEventListener('click', mostrarTelaCriacao);
