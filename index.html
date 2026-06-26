@@ -1,1 +1,156 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="A Mansão do Coronel — um livro-jogo interativo ambientado no sertão nordestino brasileiro.">
+    <meta name="theme-color" content="#1a1006">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="A Mansão do Coronel">
+    <meta property="og:description"
+        content="Um livro-jogo de horror folclórico ambientado numa fazenda abandonada do Nordeste brasileiro.">
+    <meta property="og:type" content="website">
+
+    <title>A Mansão do Coronel</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- ═══════════════════════════════════════════════════════
+       TELA DE INÍCIO
+  ════════════════════════════════════════════════════════ -->
+    <div id="tela-inicio">
+        <div class="inicio-container">
+            <div class="inicio-capa papel">
+
+                <p class="inicio-serie">Aventuras no Sertão · Volume I</p>
+
+                <h1 class="inicio-titulo">A Mansão do Coronel</h1>
+
+                <p class="inicio-subtitulo">Uma aventura de horror folclórico onde você é o herói</p>
+
+                <div class="inicio-ornamento">✦ ✦ ✦</div>
+
+                <p class="inicio-descricao">
+                    Seu carro quebrou numa estrada de terra no meio do Nordeste, durante uma tempestade.
+                    No alto da lomba, entre as bananeiras, as luzes fracas de uma fazenda antiga.
+                    A Fazenda São Benedito guarda segredos de trinta anos — e você vai ter que enfrentá-los
+                    se quiser ver o amanhecer.
+                </p>
+
+                <div class="inicio-dados-area">
+                    <p>Experimente rolar os dados antes de começar</p>
+                    <span id="resultado-dados">🎲 &nbsp; 🎲 &nbsp; 🎲</span>
+                    <button class="btn-secundario" id="btn-rolar-inicio">Rolar dados</button>
+                </div>
+
+                <button id="btn-comecar">Entrar na fazenda →</button>
+
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ═══════════════════════════════════════════════════════
+       TELA DO JOGO
+  ════════════════════════════════════════════════════════ -->
+    <div id="tela-jogo">
+
+        <!-- ── FICHA LATERAL ──────────────────────────────── -->
+        <aside id="painel-ficha">
+            <div class="ficha-box papel">
+
+                <h2 class="ficha-titulo">A Mansão do Coronel</h2>
+                <p class="ficha-subtitulo">Ficha do Aventureiro</p>
+
+                <div class="ficha-secao-num">
+                    Seção <span id="num-secao">1</span>
+                </div>
+
+                <!-- PERÍCIA -->
+                <div class="stat-bloco">
+                    <div class="stat-label">
+                        <span>Perícia</span>
+                        <span class="stat-valor" id="val-pericia">—</span>
+                    </div>
+                </div>
+
+                <!-- FORÇA -->
+                <div class="stat-bloco">
+                    <div class="stat-label">
+                        <span>Força</span>
+                        <span class="stat-valor" id="val-forca">—</span>
+                    </div>
+                    <div class="barra-fundo">
+                        <div class="barra-fill seguro" id="barra-forca" style="width:100%"></div>
+                    </div>
+                </div>
+
+                <!-- SORTE -->
+                <div class="stat-bloco">
+                    <div class="stat-label">
+                        <span>Sorte</span>
+                        <span class="stat-valor" id="val-sorte">—</span>
+                    </div>
+                </div>
+
+                <!-- MEDO -->
+                <div class="stat-bloco stat-medo">
+                    <div class="stat-label">
+                        <span>Medo</span>
+                        <span class="stat-valor">
+                            <span id="val-medo">0</span><span style="font-size:0.75rem;color:var(--tinta-fraca)"> /
+                            </span><span id="val-medo-max">—</span>
+                        </span>
+                    </div>
+                    <div class="barra-fundo">
+                        <div class="barra-fill seguro" id="barra-medo" style="width:0%"></div>
+                    </div>
+                </div>
+
+                <hr class="divisor-ficha">
+
+                <!-- ITENS -->
+                <p class="ficha-label-itens">Inventário</p>
+                <div id="lista-itens">
+                    <span class="sem-itens">Nenhum item</span>
+                </div>
+
+            </div>
+        </aside>
+
+
+        <!-- ── ÁREA PRINCIPAL ─────────────────────────────── -->
+        <main id="area-principal">
+
+            <!-- Texto narrativo -->
+            <article id="area-texto" class="papel">
+                <div id="texto-secao">
+                    <!-- Preenchido por game.js -->
+                </div>
+            </article>
+
+            <!-- Eventos mecânicos (combate, sorte, medo...) -->
+            <div id="area-evento">
+                <!-- Preenchido por game.js -->
+            </div>
+
+            <!-- Botões de escolha -->
+            <nav id="area-escolhas" aria-label="Escolhas disponíveis">
+                <!-- Preenchido por game.js -->
+            </nav>
+
+        </main>
+
+    </div><!-- /tela-jogo -->
+
+
+    <script src="story.js"></script>
+    <script src="game.js"></script>
+</body>
+
+</html>
