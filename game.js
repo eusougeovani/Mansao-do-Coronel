@@ -500,20 +500,30 @@ function renderizarFimDeJogo(vitoria) {
 
     areaEvento.innerHTML = '';
 
+    const botoesFinais = `
+        <div class="fim-botoes">
+            <button class="btn-escolha btn-fim-reiniciar" onclick="iniciarJogo()">
+                <span class="escolha-letra">↺</span>Jogar novamente
+            </button>
+            <button class="btn-escolha btn-fim-menu" onclick="voltarAoMenu()">
+                <span class="escolha-letra">⌂</span>Voltar ao menu
+            </button>
+        </div>`;
+
     if (vitoria) {
         area.innerHTML = `
-      <div class="fim-vitoria">
-        <h2>🕯️ A Fazenda Descansa em Paz</h2>
-        <p>Você libertou a alma do Coronel e desfez trinta anos de maldição.</p>
-        <button class="btn-escolha" onclick="iniciarJogo()">Jogar novamente</button>
-      </div>`;
+            <div class="fim-vitoria">
+                <h2>🕯️ A Fazenda Descansa em Paz</h2>
+                <p>Você libertou a alma do Coronel e desfez trinta anos de maldição.</p>
+                ${botoesFinais}
+            </div>`;
     } else {
         area.innerHTML = `
-      <div class="fim-derrota">
-        <h2>💀 A Mansão Venceu</h2>
-        <p>Você não sobreviveu aos segredos da Fazenda São Benedito.</p>
-        <button class="btn-escolha" onclick="iniciarJogo()">Tentar novamente</button>
-      </div>`;
+            <div class="fim-derrota">
+                <h2>💀 A Mansão Venceu</h2>
+                <p>Você não sobreviveu aos segredos da Fazenda São Benedito.</p>
+                ${botoesFinais}
+            </div>`;
     }
 }
 
@@ -522,6 +532,16 @@ function renderizarFimDeJogo(vitoria) {
 function mostrarTelaInicio() {
     document.getElementById('tela-inicio').style.display = 'flex';
     document.getElementById('tela-jogo').style.display = 'none';
+    document.getElementById('resultado-dados').innerHTML = '🎲 &nbsp; 🎲 &nbsp; 🎲';
+}
+
+function voltarAoMenu() {
+    if (GameState.morto || GameState.venceu) {
+        mostrarTelaInicio();
+        return;
+    }
+    const confirmar = confirm('Tem certeza que quer voltar ao menu? O progresso não salvo será perdido.');
+    if (confirmar) mostrarTelaInicio();
 }
 
 function iniciarJogo() {

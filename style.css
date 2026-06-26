@@ -633,6 +633,31 @@ body {
     border-color: var(--sépia-escuro);
 }
 
+/* ─── BOTÃO MENU FIXO (durante o jogo) ──────────────────── */
+
+#btn-menu-jogo {
+    position: fixed;
+    top: 0.9rem;
+    right: 1rem;
+    z-index: 100;
+    padding: 0.4rem 0.9rem;
+    background: var(--sépia-escuro);
+    color: var(--papel);
+    font-family: var(--fonte-corpo);
+    font-size: 0.78rem;
+    border: 1px solid var(--ouro);
+    border-radius: var(--radius);
+    cursor: pointer;
+    letter-spacing: 0.05em;
+    box-shadow: 0 2px 8px var(--sombra-forte);
+    transition: background 0.2s, transform 0.2s;
+}
+
+#btn-menu-jogo:hover {
+    background: var(--sépia);
+    transform: translateY(-1px);
+}
+
 /* ─── FIM DE JOGO ────────────────────────────────────────── */
 
 .fim-vitoria,
@@ -672,6 +697,31 @@ body {
     font-style: italic;
     color: var(--tinta-suave);
     margin-bottom: 1.5rem;
+}
+
+.fim-botoes {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.fim-botoes .btn-escolha {
+    flex: 1;
+    min-width: 180px;
+    max-width: 260px;
+    justify-content: center;
+}
+
+.btn-fim-menu {
+    background: var(--papel-escuro);
+    color: var(--tinta-suave);
+    border-color: var(--papel-borda);
+}
+
+.btn-fim-menu:hover {
+    background: var(--papel-borda);
+    color: var(--tinta);
 }
 
 /* ─── RESPONSIVO ─────────────────────────────────────────── */
